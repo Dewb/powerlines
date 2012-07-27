@@ -15,7 +15,7 @@ INSTALL = /usr/bin/install -c
 
 SOURCES = oscstrip.cpp effects.cpp WS2801.cpp ./osc/OscTypes.cpp ./osc/OscReceivedElements.cpp ./osc/OscPrintReceivedElements.cpp ./ip/posix/NetworkingUtils.cpp ./ip/posix/UdpSocket.cpp 
 OBJECTS = $(SOURCES:.cpp=.o)
-LIBS = -lboost_thread
+LIBS = -lboost_thread -lrt
 
 all: oscstrip	
 

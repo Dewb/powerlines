@@ -37,8 +37,13 @@ time_t getMillisecondClock()
 
 class StripOscListener : public osc::OscPacketListener 
 {
-protected:
+public:
+    StripOscListener()
+    : m_lastEvent(0)
+    {
+    }
 
+protected:
     void ProcessMessage( const osc::ReceivedMessage& m, 
                          const IpEndpointName& remoteEndpoint )
     {
@@ -102,7 +107,7 @@ public:
                 setStripColor(m_lastR, m_lastG, m_lastB);
                 send = false;
             }
-            else if (now - m_lastEvent > 1000*30)
+            else if (now - m_lastEvent > 1000*5)
             {
                 rainbow(strip, now, 100);
             }
