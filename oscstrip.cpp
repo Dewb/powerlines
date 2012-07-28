@@ -101,6 +101,8 @@ public:
         bool send = false;
         while(1)
         {
+            time_t now = getMillisecondClock();
+ 
             if (m_r != m_lastR) { send = true; m_lastR = m_r; }
             if (m_g != m_lastG) { send = true; m_lastG = m_g; }
             if (m_b != m_lastB) { send = true; m_lastB = m_b; }
