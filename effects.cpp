@@ -13,7 +13,7 @@
 //Input a value 0 to 384 to get a color value.
 //The colours are a transition r - g -b - back to r
 
-uint32_t Wheel(WS2801 strip, uint16_t WheelPos)
+uint32_t Wheel(WS2801& strip, uint16_t WheelPos)
 {
   byte r=0, g=0, b=0;
   switch(WheelPos / 128)
@@ -37,7 +37,7 @@ uint32_t Wheel(WS2801 strip, uint16_t WheelPos)
   return(strip.Color(r,g,b));
 }
 
-void rainbow(WS2801 strip, time_t t, unsigned wait) 
+void rainbow(WS2801& strip, time_t t, unsigned wait) 
 {
   unsigned i;
   unsigned cycles = 384;
@@ -54,7 +54,7 @@ void rainbow(WS2801 strip, time_t t, unsigned wait)
 
 // Slightly different, this one makes the rainbow wheel equally distributed 
 // along the chain
-void rainbowCycle(WS2801 strip, time_t t, unsigned wait) 
+void rainbowCycle(WS2801& strip, time_t t, unsigned wait) 
 {
   unsigned i;
   unsigned cycles = 384 * 5;
@@ -69,7 +69,7 @@ void rainbowCycle(WS2801 strip, time_t t, unsigned wait)
 }
 
 // fill the dots one after the other with said color
-void colorWipe(WS2801 strip, time_t t, uint32_t c, unsigned wait) 
+void colorWipe(WS2801& strip, time_t t, uint32_t c, unsigned wait) 
 {
   unsigned i;
   unsigned cycles = strip.get_length();
@@ -84,7 +84,7 @@ void colorWipe(WS2801 strip, time_t t, uint32_t c, unsigned wait)
 }
 
 // Chase a dot down the strip
-void colorChase(WS2801 strip, time_t t, uint32_t c, unsigned wait) 
+void colorChase(WS2801& strip, time_t t, uint32_t c, unsigned wait) 
 {
   unsigned i;
   unsigned cycles = strip.get_length();
@@ -99,3 +99,49 @@ void colorChase(WS2801 strip, time_t t, uint32_t c, unsigned wait)
   strip.setPixelColor(j, c);
   strip.refresh();
 }
+
+void blocking_rainbowCycle(WS2801& strip, unsigned wait) {
+  uint16_t i, j;
+  
+  for (j=0; j < 384 * 5; j++) {     // 5 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.get_length(); i++) {
+      // tricky math! we use each pixel as a fraction of the full 384-color wheel
+      // (thats the i / strip.get_length() part)
+      // Then add in j which makes the colors go around per pixel
+      // the % 384 is to make the wheel cycle around
+      strip.setPixelColor(i, Wheel( strip, ((i * 384 / strip.get_length()) + j) % 384) );
+    }  
+    strip.refresh();   // write all the pixels out
+    usleep(wait * 1000);
+  }
+}
+
+void blocking_colorWipe(WS2801& strip, uint32_t c, unsigned wait) {
+  int i;
+  
+  for (i=0; i < strip.get_length(); i++) {
+      strip.setPixelColor(i, c);
+      strip.refresh();
+      usleep(wait * 10000);
+  }
+}
+
+void blocking_colorChase(WS2801& strip, uint32_t c, unsigned wait) {
+  int i;
+  
+  for (i=0; i < strip.get_length(); i++) {
+    strip.setPixelColor(i, 0);  // turn all pixels off
+  } 
+  
+  for (i=0; i < strip.get_length(); i++) {
+      strip.setPixelColor(i, c);
+      if (i == 0) { 
+        strip.setPixelColor(strip.get_length()-1, 0);
+      } else {
+        strip.setPixelColor(i-1, 0);
+      }
+      strip.refresh();
+      usleep(wait * 100);
+  }
+}
+
