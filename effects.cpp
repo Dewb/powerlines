@@ -4,6 +4,10 @@
 #include <math.h>
 #include "WS2801.h"
 
+#include <iostream>
+#include <cstring>
+#include <cstdlib>
+
 // Following effects adapted from Adafruit WS2801 library
 
 //Input a value 0 to 384 to get a color value.
@@ -33,13 +37,15 @@ uint32_t Wheel(WS2801 strip, uint16_t WheelPos)
   return(strip.Color(r,g,b));
 }
 
-void rainbow(WS2801 strip, int t, uint8_t wait) 
+void rainbow(WS2801 strip, time_t t, unsigned wait) 
 {
-  int i;
-  int cycles = 384;
-  int period = wait * cycles;
-  int j = cycles*floor((t % period) * (1.0/period));
+  unsigned i;
+  unsigned cycles = 384;
+  unsigned period = wait * cycles;
+  unsigned ticks = t % period;
+  unsigned j = rint((double)(cycles*ticks) / (double)(period));
    
+  std::cout << j << "/" << period << " t=" << t << " wait=" << wait << " " << ticks << "\n";
   for (i=0; i < strip.get_length(); i++) {
     strip.setPixelColor(i, Wheel(strip, (i + j) % 384));
   }  
@@ -48,7 +54,7 @@ void rainbow(WS2801 strip, int t, uint8_t wait)
 
 // Slightly different, this one makes the rainbow wheel equally distributed 
 // along the chain
-void rainbowCycle(WS2801 strip, int t, uint8_t wait) 
+void rainbowCycle(WS2801 strip, time_t t, unsigned wait) 
 {
   int i;
   int cycles = 384*5;
@@ -62,7 +68,7 @@ void rainbowCycle(WS2801 strip, int t, uint8_t wait)
 }
 
 // fill the dots one after the other with said color
-void colorWipe(WS2801 strip, int t, uint32_t c, uint8_t wait) 
+void colorWipe(WS2801 strip, time_t t, uint32_t c, unsigned wait) 
 {
   int i;
   int cycles = strip.get_length();
@@ -76,7 +82,7 @@ void colorWipe(WS2801 strip, int t, uint32_t c, uint8_t wait)
 }
 
 // Chase a dot down the strip
-void colorChase(WS2801 strip, int t, uint32_t c, uint8_t wait) 
+void colorChase(WS2801 strip, time_t t, uint32_t c, unsigned wait) 
 {
   int i;
   int cycles = strip.get_length();

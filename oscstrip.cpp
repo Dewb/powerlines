@@ -32,14 +32,16 @@ time_t getMillisecondClock()
 {
   timespec tp;
   clock_gettime(CLOCK_MONOTONIC, &tp);
-  return tp.tv_sec * 1000 + tp.tv_nsec / 1000;
+  return tp.tv_sec * 1000 + tp.tv_nsec / 1000000;
 }
 
 class StripOscListener : public osc::OscPacketListener 
 {
 public:
     StripOscListener()
-    : m_lastEvent(0)
+    : m_lastEventTime(0)
+    , m_lastEffectTime(0)
+    , m_lastEffectDelay(0)
     {
     }
 
@@ -76,11 +78,13 @@ protected:
         
         if (update)
         {
-          m_lastEvent = getMillisecondClock();
+          m_lastEventTime = getMillisecondClock();
         }
     }  
     
-    time_t m_lastEvent;
+    time_t m_lastEventTime;
+    time_t m_lastEffectTime;
+    int m_lastEffectDelay;
 
     volatile uint8_t m_r;
     volatile uint8_t m_g;
@@ -94,11 +98,11 @@ public:
 
     void do_work()
     {  
-        time_t now = getMillisecondClock();
-        
         bool send = false;
         while(1)
         {
+            time_t now = getMillisecondClock();
+ 
             if (m_r != m_lastR) { send = true; m_lastR = m_r; }
             if (m_g != m_lastG) { send = true; m_lastG = m_g; }
             if (m_b != m_lastB) { send = true; m_lastB = m_b; }
@@ -107,9 +111,15 @@ public:
                 setStripColor(m_lastR, m_lastG, m_lastB);
                 send = false;
             }
-            else if (now - m_lastEvent > 1000*5)
+            else if (now - m_lastEventTime > 1000*5 && 
+                     now - m_lastEffectTime >= m_lastEffectDelay)
             {
-                rainbow(strip, now, 100);
+                //std::cout << "FX output for t=" << now << "\n";
+                unsigned wait = 200;
+                rainbow(strip, now, wait);
+
+                m_lastEffectTime = now;
+                m_lastEffectDelay = wait;
             }
         }
     }   
