@@ -56,10 +56,11 @@ void rainbow(WS2801 strip, time_t t, unsigned wait)
 // along the chain
 void rainbowCycle(WS2801 strip, time_t t, unsigned wait) 
 {
-  int i;
-  int cycles = 384*5;
-  int period = wait * cycles;
-  int j = cycles*floor((t % period) * (1.0/period));
+  unsigned i;
+  unsigned cycles = 384 * 5;
+  unsigned period = wait * cycles;
+  unsigned ticks = t % period;
+  unsigned j = rint((double)(cycles*ticks) / (double)(period));
   
   for (i=0; i < strip.get_length(); i++) {
     strip.setPixelColor(i, Wheel(strip, ((i * 384 / strip.get_length()) + j) % 384) );
@@ -70,10 +71,11 @@ void rainbowCycle(WS2801 strip, time_t t, unsigned wait)
 // fill the dots one after the other with said color
 void colorWipe(WS2801 strip, time_t t, uint32_t c, unsigned wait) 
 {
-  int i;
-  int cycles = strip.get_length();
-  int period = wait * cycles;
-  int j = cycles*floor((t % period) * (1.0/period));
+  unsigned i;
+  unsigned cycles = strip.get_length();
+  unsigned period = wait * cycles;
+  unsigned ticks = t % period;
+  unsigned j = rint((double)(cycles*ticks) / (double)(period));
   
   for (i=0; i < j; i++) {
     strip.setPixelColor(i, c);
@@ -84,10 +86,11 @@ void colorWipe(WS2801 strip, time_t t, uint32_t c, unsigned wait)
 // Chase a dot down the strip
 void colorChase(WS2801 strip, time_t t, uint32_t c, unsigned wait) 
 {
-  int i;
-  int cycles = strip.get_length();
-  int period = wait * cycles;
-  int j = cycles*floor((t % period) * (1.0/period));
+  unsigned i;
+  unsigned cycles = strip.get_length();
+  unsigned period = wait * cycles;
+  unsigned ticks = t % period;
+  unsigned j = rint((double)(cycles*ticks) / (double)(period));
   
   for (i=0; i < strip.get_length(); i++) {
     strip.setPixelColor(i, 0);  // turn all pixels off

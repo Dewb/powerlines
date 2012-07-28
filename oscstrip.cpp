@@ -106,6 +106,7 @@ public:
             if (m_r != m_lastR) { send = true; m_lastR = m_r; }
             if (m_g != m_lastG) { send = true; m_lastG = m_g; }
             if (m_b != m_lastB) { send = true; m_lastB = m_b; }
+            
             if (send)
             {
                 setStripColor(m_lastR, m_lastG, m_lastB);
@@ -114,9 +115,91 @@ public:
             else if (now - m_lastEventTime > 1000*5 && 
                      now - m_lastEffectTime >= m_lastEffectDelay)
             {
-                //std::cout << "FX output for t=" << now << "\n";
-                unsigned wait = 200;
-                rainbow(strip, now, wait);
+                unsigned wait = 0;
+                
+                // todo: build a data structure for all this nonsense
+                unsigned t = now % 384*5+192*7+1920*7+384*200;
+                
+                if (t < 384*5)
+                {
+                   wait = 1;
+                   rainbowCycle(strip, now, wait);
+                } 
+                else if (t >= 384*5 && t < 384*5+192)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(255,255,255), wait);
+                }
+                else if (t >= 384*5+192*1 && t < 384*5+192*2)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(255,0,0), wait);
+                }
+                else if (t >= 384*5+192*2 && t < 384*5+192*3)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(255,255,0), wait);
+                }
+                else if (t >= 384*5+192*3 && t < 384*5+192*4)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(0,255,0), wait);
+                }
+                else if (t >= 384*5+192*4 && t < 384*5+192*5)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(0,255,255), wait);
+                }
+                else if (t >= 384*5+192*5 && t < 384*5+192*6)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(0,0,255), wait);
+                }
+                else if (t >= 384*5+192*6 && t < 384*5+192*7)
+                { 
+                   wait = 1;
+                   colorChase(strip, now, strip.Color(255,0,255), wait);
+                }
+                else if (t >= 384*5+192*7 && t < 384*5+192*7+1920)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(0,0,0), wait);
+                }
+                else if (t >= 384*5+192*7+1920*1 && t < 384*5+192*7+1920*2)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(255,0,0), wait);
+                }
+                else if (t >= 384*5+192*7+1920*2 && t < 384*5+192*7+1920*3)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(0,0,0), wait);
+                }
+                else if (t >= 384*5+192*7+1920*3 && t < 384*5+192*7+1920*4)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(0,255,0), wait);
+                }
+                else if (t >= 384*5+192*7+1920*4 && t < 384*5+192*7+1920*5)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(0,0,0), wait);
+                }
+                else if (t >= 384*5+192*7+1920*5 && t < 384*5+192*7+1920*6)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(0,0,255), wait);
+                }
+                else if (t >= 384*5+192*7+1920*6 && t < 384*5+192*7+1920*7)
+                { 
+                   wait = 10;
+                   colorWipe(strip, now, strip.Color(0,0,0), wait);
+                }
+                else if (t >= 384*5+192*7+1920*7)
+                {
+                   wait = 200;
+                   rainbow(strip, now, wait);
+                }
 
                 m_lastEffectTime = now;
                 m_lastEffectDelay = wait;
