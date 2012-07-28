@@ -40,6 +40,7 @@ class StripOscListener : public osc::OscPacketListener
 public:
     StripOscListener()
     : m_lastEventTime(0)
+    , m_lastEffectStart(0)
     , m_lastEffectTime(0)
     , m_lastEffectDelay(0)
     {
@@ -83,6 +84,7 @@ protected:
     }  
     
     time_t m_lastEventTime;
+    time_t m_lastEffectStart;
     time_t m_lastEffectTime;
     int m_lastEffectDelay;
 
@@ -101,8 +103,6 @@ public:
         bool send = false;
         while(1)
         {
-            time_t now = getMillisecondClock();
- 
             if (m_r != m_lastR) { send = true; m_lastR = m_r; }
             if (m_g != m_lastG) { send = true; m_lastG = m_g; }
             if (m_b != m_lastB) { send = true; m_lastB = m_b; }
@@ -115,7 +115,7 @@ public:
             else
             {
                 time_t now = getMillisecondClock();
-                if (now - m_lastEffectTime > 384*200)
+                if (now - m_lastEffectStart > 384*200)
                 {
                 blocking_rainbowCycle(strip, 1);  // make it go through the cycle fairly fast
                 blocking_colorChase(strip, strip.Color(255,255,255), 10);
@@ -133,10 +133,15 @@ public:
                 blocking_colorWipe(strip, strip.Color(0,0,0xff), 1);		// blue
                 blocking_colorWipe(strip, strip.Color(0, 0, 0), 1);
 
-                now = m_lastEffectTime = getMillisecondClock();
+                now = m_lastEffectStart = getMillisecondClock();
                 }
                
-                rainbow(strip, now - m_lastEffectTime, 200);
+                if (now - m_lastEffectTime > 20 && 
+                    now - m_lastEventTime > 5*1000)
+                {
+                   rainbow(strip, now - m_lastEffectStart, 200);
+                   m_lastEffectTime = now;
+                }
             }
         }
     }   

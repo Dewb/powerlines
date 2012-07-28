@@ -45,7 +45,7 @@ void rainbow(WS2801& strip, time_t t, unsigned wait)
   unsigned ticks = t % period;
   unsigned j = rint((double)(cycles*ticks) / (double)(period));
    
-  std::cout << j << "/" << period << " t=" << t << " wait=" << wait << " " << ticks << "\n";
+  //std::cout << j << "/" << period << " t=" << t << " wait=" << wait << " " << ticks << "\n";
   for (i=0; i < strip.get_length(); i++) {
     strip.setPixelColor(i, Wheel(strip, (i + j) % 384));
   }  
