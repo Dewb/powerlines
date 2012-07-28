@@ -118,85 +118,101 @@ public:
                 unsigned wait = 0;
                 
                 // todo: build a data structure for all this nonsense
-                unsigned t = now % 384*5+192*7+1920*7+384*200;
+                unsigned t = now % (384*5+192*7+1920*7+384*200);
                 
                 if (t < 384*5)
                 {
+                   std::cout << "FX: rainbowCycle t=" << t << "\n";
                    wait = 1;
                    rainbowCycle(strip, now, wait);
                 } 
                 else if (t >= 384*5 && t < 384*5+192)
                 { 
+                   std::cout << "FX: colorChase1 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(255,255,255), wait);
                 }
                 else if (t >= 384*5+192*1 && t < 384*5+192*2)
                 { 
+                   std::cout << "FX: colorChase2 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(255,0,0), wait);
                 }
                 else if (t >= 384*5+192*2 && t < 384*5+192*3)
                 { 
+                   std::cout << "FX: colorChase3 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(255,255,0), wait);
                 }
                 else if (t >= 384*5+192*3 && t < 384*5+192*4)
                 { 
+                   std::cout << "FX: colorChase4 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(0,255,0), wait);
                 }
                 else if (t >= 384*5+192*4 && t < 384*5+192*5)
                 { 
+                   std::cout << "FX: colorChase5 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(0,255,255), wait);
                 }
                 else if (t >= 384*5+192*5 && t < 384*5+192*6)
                 { 
+                   std::cout << "FX: colorChase6 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(0,0,255), wait);
                 }
                 else if (t >= 384*5+192*6 && t < 384*5+192*7)
                 { 
+                   std::cout << "FX: colorChase7 t=" << t << "\n";
                    wait = 1;
                    colorChase(strip, now, strip.Color(255,0,255), wait);
                 }
                 else if (t >= 384*5+192*7 && t < 384*5+192*7+1920)
                 { 
+                   std::cout << "FX: colorWipe1 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(0,0,0), wait);
                 }
                 else if (t >= 384*5+192*7+1920*1 && t < 384*5+192*7+1920*2)
                 { 
+                   std::cout << "FX: colorWipe2 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(255,0,0), wait);
                 }
                 else if (t >= 384*5+192*7+1920*2 && t < 384*5+192*7+1920*3)
                 { 
+                   std::cout << "FX: colorWipe3 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(0,0,0), wait);
                 }
                 else if (t >= 384*5+192*7+1920*3 && t < 384*5+192*7+1920*4)
                 { 
+                   std::cout << "FX: colorWipe4 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(0,255,0), wait);
                 }
                 else if (t >= 384*5+192*7+1920*4 && t < 384*5+192*7+1920*5)
                 { 
+                   std::cout << "FX: colorWipe5 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(0,0,0), wait);
                 }
                 else if (t >= 384*5+192*7+1920*5 && t < 384*5+192*7+1920*6)
                 { 
+                   std::cout << "FX: colorWipe6 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(0,0,255), wait);
                 }
                 else if (t >= 384*5+192*7+1920*6 && t < 384*5+192*7+1920*7)
                 { 
+                   std::cout << "FX: colorWipe7 t=" << t << "\n";
                    wait = 10;
                    colorWipe(strip, now, strip.Color(0,0,0), wait);
                 }
                 else if (t >= 384*5+192*7+1920*7)
                 {
+                   std::cout << "FX: rainbow t=" << t << "\n";
                    wait = 200;
                    rainbow(strip, now, wait);
                 }
